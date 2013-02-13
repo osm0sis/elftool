@@ -1,8 +1,8 @@
 /* 
  * File:   elfboot.h
- * Author: cryogen
+ * Author: srl3gx@gmail.com
  *
- * Created on 10 February, 2013, 3:46 PM
+ * 
  */
 
 #ifndef ELFBOOT_H
