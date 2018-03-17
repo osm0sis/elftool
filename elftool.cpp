@@ -306,9 +306,6 @@ void handleUnpackElf(int argc, char** argv) {
         printf("offset : %i\n", pheader.p_offset);
         printf("size : %i\n", pheader.p_memsz);
         string name;
-        if (pheader.p_flags < 0) {
-            pheader.p_flags = -pheader.p_flags;
-        }
         switch (pheader.p_flags) {
             case p_flags_cmdline:
                 name = "cmdline";
