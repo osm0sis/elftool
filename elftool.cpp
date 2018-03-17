@@ -3,6 +3,7 @@
  * Author: srl3gx@gmail.com
  *
  * Packing and unpacking boot image of sony mobile devices
+ * https://forum.xda-developers.com/xperia-j-e/development/arm-elftool-pack-unpack-boot-image-sony-t2146022
  * 
  * Thanks to sony for providing boot image format in packelf.py
  * 
@@ -118,7 +119,13 @@ void handlePackElf(int argc, char** argv) {
             exit(EXIT_FAILURE);
         }
         long size = getFileSize(temp_file);
-        struct file f = {arguments[0], address, size, arguments[2], offset};
+        struct file f = {
+            arguments[0],
+            static_cast<unsigned int>(address),
+            static_cast<unsigned int>(size),
+            arguments[2],
+            static_cast<unsigned int>(offset)
+        };
         offset += size;
         fclose(temp_file);
         files[parts] = f;
@@ -156,7 +163,7 @@ void handlePackElf(int argc, char** argv) {
             exit(EXIT_FAILURE);
         }
         int size = getFileSize(temp_file);
-        unsigned char data[size];
+        unsigned char* data = new unsigned char [size];
         fseek(temp_file, 0, SEEK_SET);
         fread(data, size, 1, temp_file);
         fclose(temp_file);
@@ -179,7 +186,7 @@ void writeElfHeader(FILE* file, unsigned int address, int number) {
         0,
         52,
         32,
-        number,
+        static_cast<short unsigned int>(number),
         0,
         0,
         0
@@ -210,13 +217,13 @@ void writeElfPHeader(FILE* file, struct file f) {
     }
     printf("Write part header part:%s offset:%i address:%x, size:%i\n", f.flag.c_str(), f.offset, f.address, f.size);
     struct elfphdr phdr = {
-        type,
+        static_cast<unsigned int>(type),
         f.offset,
         f.address,
         f.address,
         f.size,
         f.size,
-        flags,
+        static_cast<unsigned int>(flags),
         0
     };
     fwrite((char *) &phdr, sizeof (phdr), 1, file);
