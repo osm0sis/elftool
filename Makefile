@@ -25,7 +25,7 @@ endif
 all: elftool$(EXE)
 
 static:
-	make LDFLAGS="$(LDFLAGS) -static"
+	$(MAKE) LDFLAGS="$(LDFLAGS) -static"
 
 elftool$(EXE):elftool.o
 	$(CROSS_COMPILE)$(CC) -o $@ $^ $(LDFLAGS)
