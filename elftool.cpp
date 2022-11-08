@@ -87,7 +87,7 @@ void handlePackElf(int argc, char** argv) {
             header = fopen(arguments[1].c_str(), "rb");
             struct elf_header boot_header;
             fseek(header, 0, SEEK_SET);
-            fread(&boot_header, elf_header_size, 1, header);
+            if (fread(&boot_header, elf_header_size, 1, header)) {};
             if (memcmp(boot_header.e_ident, elf_magic, 8) != 0) {
                 printf("Header file is not a valid elf image header...Exit");
                 exit(EXIT_FAILURE);
@@ -96,7 +96,7 @@ void handlePackElf(int argc, char** argv) {
             for (int i = 0; i < boot_header.e_phnum; i++) {
                 struct elfphdr part_header;
                 fseek(header, offset, SEEK_SET);
-                fread(&part_header, elf_p_header_size, 1, header);
+                if (fread(&part_header, elf_p_header_size, 1, header)) {};
                 part_headers[i] = part_header;
                 offset += 32;
             }
@@ -165,7 +165,7 @@ void handlePackElf(int argc, char** argv) {
         int size = getFileSize(temp_file);
         unsigned char* data = new unsigned char [size];
         fseek(temp_file, 0, SEEK_SET);
-        fread(data, size, 1, temp_file);
+        if (fread(data, size, 1, temp_file)) {};
         fclose(temp_file);
         fwrite(data, size, 1, output_file);
     }
@@ -269,7 +269,7 @@ void handleUnpackElf(int argc, char** argv) {
 
     fseek(input_file, offset, SEEK_SET);
     struct elf_header header;
-    fread(&header, elf_header_size, 1, input_file);
+    if (fread(&header, elf_header_size, 1, input_file)) {};
     offset += elf_header_size;
 
     if (memcmp(elf_magic, header.e_ident, elf_magic_size) != 0) {
@@ -284,7 +284,7 @@ void handleUnpackElf(int argc, char** argv) {
 
     for (int i = 0; i < number_of_parts; i++) {
         fseek(input_file, offset, SEEK_SET);
-        fread(&pheaders[i], elf_p_header_size, 1, input_file);
+        if (fread(&pheaders[i], elf_p_header_size, 1, input_file)) {};
         offset += elf_p_header_size;
     }
 
@@ -292,7 +292,7 @@ void handleUnpackElf(int argc, char** argv) {
     printf("Writing header....\n");
     unsigned char* fileBuffer = (unsigned char*) malloc(4096);
     fseek(input_file, 0, SEEK_SET);
-    fread(fileBuffer, 4096, 1, input_file);
+    if (fread(fileBuffer, 4096, 1, input_file)) {};
     tempstr = output_path + "/header";
     temp = fopen(tempstr.c_str(), "w+");
     fwrite(fileBuffer, 4096, 1, temp);
@@ -326,7 +326,7 @@ void handleUnpackElf(int argc, char** argv) {
         temp = fopen(tempstr.c_str(), "w+");
         unsigned char* buffer = (unsigned char*) malloc(pheader.p_memsz);
         fseek(input_file, pheader.p_offset, SEEK_SET);
-        fread(buffer, pheader.p_memsz, 1, input_file);
+        if (fread(buffer, pheader.p_memsz, 1, input_file)) {};
         fwrite(buffer, pheader.p_memsz, 1, temp);
         fclose(temp);
         free(buffer);
